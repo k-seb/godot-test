@@ -31,8 +31,15 @@ jobs:
       - name: Download Export Templates
         run: |
           wget https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz -O templates.zip
-          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          unzip templates.zip -d ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          TEMPLATES_DIR="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$TEMPLATES_DIR"
+          unzip templates.zip -d "$TEMPLATES_DIR"
+
+          # jeśli pliki są w podkatalogu "templates/", przenieś je poziom wyżej
+          if [ -d "$TEMPLATES_DIR/templates" ]; then
+            mv "$TEMPLATES_DIR"/templates/* "$TEMPLATES_DIR"/
+            rmdir "$TEMPLATES_DIR"/templates
+          fi
 
       - name: Prepare export directory
         run: |
