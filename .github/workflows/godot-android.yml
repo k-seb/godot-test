@@ -1,0 +1,52 @@
+name: Build Godot Android APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch: # ręczne odpalenie z UI GitHuba
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    env:
+      GODOT_VERSION: 4.3
+      EXPORT_PRESET: "Android"          # nazwa presetu z Project -> Export
+      EXPORT_PATH: "build/android"      # gdzie zapisujemy apk
+      PROJECT_PATH: "."                 # jeśli projekt w root; zmień jeśli w podfolderze
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Godot Headless
+        run: |
+          wget https://downloads.tuxfamily.org/godotengine/$GODOT_VERSION/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip -O godot.zip
+          unzip godot.zip -d godot-bin
+          mv godot-bin/Godot_v${GODOT_VERSION}-stable_linux.x86_64 godot
+          chmod +x godot
+
+      - name: Download Export Templates
+        run: |
+          wget https://downloads.tuxfamily.org/godotengine/$GODOT_VERSION/Godot_v${GODOT_VERSION}-stable_export_templates.tpz -O templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          tar -xf templates.tpz -C ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable --strip-components=1
+
+      - name: Prepare export directory
+        run: |
+          mkdir -p $EXPORT_PATH
+
+      - name: Export Android APK
+        run: |
+          ./godot --headless --verbose \
+            --path $PROJECT_PATH \
+            --export-release "$EXPORT_PRESET" \
+            $EXPORT_PATH/game.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-android-apk
+          path: ${{ env.EXPORT_PATH }}/game.apk
