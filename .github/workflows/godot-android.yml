@@ -30,9 +30,9 @@ jobs:
 
       - name: Download Export Templates
         run: |
-          wget https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz -O templates.tpz
+          wget https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz -O templates.zip
           mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          tar -xf templates.tpz -C ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable --strip-components=1
+          unzip templates.zip -d ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
 
       - name: Prepare export directory
         run: |
