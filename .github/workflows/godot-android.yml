@@ -43,23 +43,47 @@ jobs:
 
       - name: Restore keystore from secrets
         run: |
-          mkdir -p android-ci
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android-ci/godot-debug.keystore
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > godot.keystore
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+      - name: Check keystore
+        run: |
+          ls -lh godot.keystore
+          keytool -list -v -keystore godot.keystore -storepass "$ANDROID_KEYSTORE_PASSWORD"
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
       - name: Prepare export directory
         run: mkdir -p $EXPORT_PATH
 
-      - name: Export Android APK
+      - name: Export unsigned Android APK
         run: |
           ./godot --headless --verbose \
             --path $PROJECT_PATH \
             --export-release "$EXPORT_PRESET" \
-            $EXPORT_PATH/game.apk
+            $EXPORT_PATH/app-unsigned.apk
+
+      - name: Sign APK with apksigner
+        run: |
+          /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner sign \
+            --ks godot.keystore \
+            --ks-pass pass:"$ANDROID_KEYSTORE_PASSWORD" \
+            --ks-key-alias "$ANDROID_KEY_ALIAS" \
+            --key-pass pass:"$ANDROID_KEY_ALIAS_PASSWORD" \
+            --out $EXPORT_PATH/game-signed.apk \
+            $EXPORT_PATH/app-unsigned.apk
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_ALIAS_PASSWORD: ${{ secrets.ANDROID_KEY_ALIAS_PASSWORD }}
+
+      - name: Verify APK signature
+        run: |
+          /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner verify --verbose $EXPORT_PATH/game-signed.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: godot-android-apk
-          path: ${{ env.EXPORT_PATH }}/game.apk
+          path: ${{ env.EXPORT_PATH }}/game-signed.apk
