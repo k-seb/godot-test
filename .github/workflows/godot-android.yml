@@ -41,19 +41,25 @@ jobs:
             rmdir "$TEMPLATES_DIR"/templates
           fi
 
-      - name: Prepare export directory
+      - name: Restore keystore from secrets
         run: |
-          mkdir -p $EXPORT_PATH
+          mkdir -p android-ci
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android-ci/godot-debug.keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
-      - name: Export Android APK (debug)
+      - name: Prepare export directory
+        run: mkdir -p $EXPORT_PATH
+
+      - name: Export Android APK
         run: |
           ./godot --headless --verbose \
             --path $PROJECT_PATH \
-            --export-debug "$EXPORT_PRESET" \
-            $EXPORT_PATH/game-debug.apk
+            --export-release "$EXPORT_PRESET" \
+            $EXPORT_PATH/game.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot-android-apk-debug
-          path: ${{ env.EXPORT_PATH }}/game-debug.apk
+          name: godot-android-apk
+          path: ${{ env.EXPORT_PATH }}/game.apk
