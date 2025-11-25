@@ -23,16 +23,16 @@ jobs:
 
       - name: Download Godot Headless
         run: |
-          wget https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip -O godot.zip
+          wget https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip -O godot.zip
           unzip godot.zip -d godot-bin
-          mv godot-bin/Godot_v4.3-stable_linux.x86_64 godot
+          mv godot-bin/Godot_v${GODOT_VERSION}-stable_linux.x86_64 godot
           chmod +x godot
 
       - name: Download Export Templates
         run: |
-          wget https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz -O templates.tpz
-          mkdir -p ~/.local/share/godot/export_templates/4.3.stable
-          tar -xf templates.tpz -C ~/.local/share/godot/export_templates/4.3.stable --strip-components=1
+          wget https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz -O templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          tar -xf templates.tpz -C ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable --strip-components=1
 
       - name: Prepare export directory
         run: |
