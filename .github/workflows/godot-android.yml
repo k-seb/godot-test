@@ -45,15 +45,15 @@ jobs:
         run: |
           mkdir -p $EXPORT_PATH
 
-      - name: Export Android APK
+      - name: Export Android APK (debug)
         run: |
           ./godot --headless --verbose \
             --path $PROJECT_PATH \
-            --export-release "$EXPORT_PRESET" \
-            $EXPORT_PATH/game.apk
+            --export-debug "$EXPORT_PRESET" \
+            $EXPORT_PATH/game-debug.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot-android-apk
-          path: ${{ env.EXPORT_PATH }}/game.apk
+          name: godot-android-apk-debug
+          path: ${{ env.EXPORT_PATH }}/game-debug.apk
