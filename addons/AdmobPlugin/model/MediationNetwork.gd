@@ -267,7 +267,7 @@ static func generate_sk_ad_network_plist(a_networks: Array[MediationNetwork]) ->
 	for __network in a_networks:
 		for __network_id in __network.sk_ad_network_ids:
 			if not __unique_sk_network_ad_ids.has(__network_id):
-				__unique_sk_network_ad_ids.set(__network_id, null)
+				__unique_sk_network_ad_ids.set[__network_id] = null
 
 	for __network_id in __unique_sk_network_ad_ids.keys():
 		__sk_ad_ids_plist_content += SK_AD_NETWORK_ITEM_FORMAT % __network_id
