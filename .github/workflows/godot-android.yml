@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      GODOT_VERSION: 4.3
+      GODOT_VERSION: 4.5.1
       EXPORT_PRESET: "Android"          # nazwa presetu z Project -> Export
       EXPORT_PATH: "build/android"      # gdzie zapisujemy apk
       PROJECT_PATH: "."                 # jeśli projekt w root; zmień jeśli w podfolderze
