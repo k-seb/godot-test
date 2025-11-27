@@ -16,4 +16,12 @@ data_*/
 mono_crash.*.json
 
 android-ci/*.keystore
-android/
+
+# Android build artefacts
+android/build/build/
+android/build/libs/debug/
+android/build/libs/release/
+android/build/.gradle/
+android/build/.cxx/
+android/build/local.properties
+android/.gradle/
