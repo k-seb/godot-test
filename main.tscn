@@ -1,14 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://584orsojewxv"]
+[gd_scene load_steps=5 format=3 uid="uid://584orsojewxv"]
 
 [ext_resource type="Script" uid="uid://dsefg6y34mer7" path="res://gesture_area.gd" id="1"]
+[ext_resource type="Script" uid="uid://dmiv06ynria3x" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://cv4h5vfwnpj63" path="res://cube_scene.tscn" id="2"]
+[ext_resource type="Script" uid="uid://bdpnhom0ktg6w" path="res://addons/AdmobPlugin/Admob.gd" id="4_1bvp3"]
 
 [node name="VBoxContainer" type="VBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+script = ExtResource("1_h2yge")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -30,7 +35,7 @@ two_fingers_zoom = false
 own_world_3d = true
 handle_input_locally = false
 msaa_3d = 2
-size = Vector2i(574, 322)
+size = Vector2i(574, 295)
 render_target_update_mode = 4
 
 [node name="Node3D" parent="HBoxContainer/SubViewportContainer/SubViewport" instance=ExtResource("2")]
@@ -56,7 +61,7 @@ two_fingers_zoom = false
 own_world_3d = true
 handle_input_locally = false
 msaa_3d = 2
-size = Vector2i(574, 322)
+size = Vector2i(574, 295)
 render_target_update_mode = 4
 
 [node name="Node3D" parent="HBoxContainer/ViewportContainer2/SubViewport" instance=ExtResource("2")]
@@ -86,7 +91,7 @@ two_fingers_zoom = false
 own_world_3d = true
 handle_input_locally = false
 msaa_3d = 2
-size = Vector2i(574, 322)
+size = Vector2i(574, 295)
 render_target_update_mode = 4
 
 [node name="Node3D" parent="HBoxContainer2/SubViewportContainer/SubViewport" instance=ExtResource("2")]
@@ -110,7 +115,7 @@ target = NodePath("SubViewport/Node3D/MeshInstance3D")
 own_world_3d = true
 handle_input_locally = false
 msaa_3d = 2
-size = Vector2i(574, 322)
+size = Vector2i(574, 295)
 render_target_update_mode = 4
 
 [node name="Node3D" parent="HBoxContainer2/ViewportContainer2/SubViewport" instance=ExtResource("2")]
@@ -121,6 +126,24 @@ current = true
 [node name="Label2" type="Label" parent="HBoxContainer2/ViewportContainer2"]
 layout_mode = 2
 text = "One-finger X/Y, two-finger Z + pinch"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="."]
+modulate = Color(0.97287494, 0.5995587, 0.6506129, 1)
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+alignment = 1
+
+[node name="Admob" type="Node" parent="."]
+script = ExtResource("4_1bvp3")
+banner_position = 1
+banner_size = 3
+android_debug_application_id = "ca-app-pub-5061379973816711~9012469674"
+android_real_application_id = "ca-app-pub-5061379973816711~9012469674"
+android_real_banner_id = "ca-app-pub-5061379973816711/3349079452"
+metadata/_custom_type_script = "uid://bdpnhom0ktg6w"
+
+[connection signal="banner_ad_loaded" from="Admob" to="." method="_on_admob_banner_ad_loaded"]
+[connection signal="initialization_completed" from="Admob" to="." method="_on_admob_initialization_completed"]
 
 [editable path="HBoxContainer/SubViewportContainer/SubViewport/Node3D"]
 [editable path="HBoxContainer/ViewportContainer2/SubViewport/Node3D"]
